@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -45,13 +46,16 @@ fun HomeScreen(navController: NavHostController, viewModel: WishViewModel) {
                 .padding(paddingValues),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            var listofWishes = viewModel.listOfWishes.collectAsState(initial = listOf())
             LazyColumn(
                 modifier = Modifier
                     .wrapContentSize()
 
             ) {
-                items(list) {
-                    WishTile(it, {})
+                items(listofWishes.value) {
+                    WishTile(it, {
+                        navController.navigate(Screen.AddScreen.route + '/' + it.id)
+                    })
                 }
             }
         }
@@ -69,7 +73,7 @@ fun FloatButton(context: Context, navController: NavController, id: Long) {
                 "",
                 Toast.LENGTH_SHORT
             ).show()
-            navController.navigate(Screen.AddScreen.route)
+            navController.navigate(Screen.AddScreen.route + "/0")
 
         },
         contentColor = Color.Black,
@@ -87,7 +91,7 @@ fun WishTile(wish: Wish, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(all = 8.dp)
-            .clickable { }
+            .clickable { onClick() }
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(text = wish.heading, fontWeight = FontWeight.Bold)

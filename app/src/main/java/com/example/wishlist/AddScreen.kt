@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +26,11 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditScreen(id: Long, navController: NavController, viewModel: WishViewModel) {
+    if (id != 0L) {
+        val wish = viewModel.getWishById(id).collectAsState(initial = Wish("", "", 0))
+        viewModel.titleState = wish.value.heading
+        viewModel.descriptionState = wish.value.desc
+    }
     Scaffold(
         topBar = {
             TopBar(title = if (id != 0L) "Add Wish" else "Edit Wish", {
@@ -78,12 +84,18 @@ fun AddEditScreen(id: Long, navController: NavController, viewModel: WishViewMod
                             )
                         )
                     } else {
-
+                        viewModel.updateWish(
+                            Wish(
+                                viewModel.titleState,
+                                viewModel.descriptionState,
+                                id
+                            )
+                        )
                     }
                     navController.navigateUp()
                 }
             }) {
-                Text(text = if (id != 0L) "Add" else "Edit", fontSize = 24.sp)
+                Text(text = if (id == 0L) "Add" else "Edit", fontSize = 24.sp)
             }
 
         }
