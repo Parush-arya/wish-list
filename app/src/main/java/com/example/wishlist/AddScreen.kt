@@ -30,6 +30,9 @@ fun AddEditScreen(id: Long, navController: NavController, viewModel: WishViewMod
         val wish = viewModel.getWishById(id).collectAsState(initial = Wish("", "", 0))
         viewModel.titleState = wish.value.heading
         viewModel.descriptionState = wish.value.desc
+    } else {
+        viewModel.titleState = ""
+        viewModel.descriptionState = ""
     }
     Scaffold(
         topBar = {
