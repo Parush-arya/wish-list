@@ -1,0 +1,98 @@
+package com.example.wishlist
+
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+
+@Composable
+fun HomeScreen(navController: NavHostController, viewModel: WishViewModel) {
+    var context = LocalContext.current
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { TopBar(title = "WishList", {}) },
+        floatingActionButton = {
+            FloatButton(context = context, navController, 1)
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                items(list) {
+                    WishTile(it, {})
+                }
+            }
+        }
+
+    }
+
+}
+
+@Composable
+fun FloatButton(context: Context, navController: NavController, id: Long) {
+    FloatingActionButton(
+        onClick = {
+            Toast.makeText(
+                context,
+                "",
+                Toast.LENGTH_SHORT
+            ).show()
+            navController.navigate(Screen.AddScreen.route)
+
+        },
+        contentColor = Color.Black,
+        containerColor = Color.Blue,
+        shape = RoundedCornerShape(32.dp),
+        modifier = Modifier.size(72.dp)
+    ) {
+        Icon(Icons.Filled.Add, null)
+    }
+}
+
+@Composable
+fun WishTile(wish: Wish, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 8.dp)
+            .clickable { }
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(text = wish.heading, fontWeight = FontWeight.Bold)
+            Text(text = wish.desc)
+        }
+
+    }
+}
